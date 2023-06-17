@@ -15,29 +15,46 @@ def main():
 
     rawTrainDataFrame = pd.read_csv('../data/train.csv')
     rawTestDataFrame = pd.read_csv('../data/test.csv')
+    data = describeDataSet()
+
     
-    distPlot(rawTrainDataFrame['SalePrice'], "Train")
+    #distPlot(rawTrainDataFrame['SalePrice'], "Train")
     trainDataConversion = convertDataFrame(rawTrainDataFrame)
     trainDataConversion.num2str()
     trainDataConversion.completeDefectValue()
     trainDataConversion.onehotEncoding()
     trainDataConversion.outlierException()
     convTrainDataFrame = trainDataConversion.getResult()
-    
-    distPlot(convTrainDataFrame['SalePrice'],"Train_mod")
-    print(convTrainDataFrame)
+    data.plotAll(convTrainDataFrame,"TrainingData")    
+    #distPlot(convTrainDataFrame['SalePrice'],"Train_mod")
+    #print(convTrainDataFrame)
     
     print("end")
 
-def distPlot(pltDataSeries,dataSetName = "" ):
-    sns.distplot(pltDataSeries)
-    plt.show()
-    print("==========================\n(DistInfo)" + dataSetName + " / " +pltDataSeries.name)
-    print(pltDataSeries.describe())
-    print(f"skewness: {round(pltDataSeries.skew(),4)}" )
-    print(f"kurtosis: {round(pltDataSeries.kurt(),4)}" )
-    print("==========================")
-    
+class describeDataSet:
+    def plotAll(self,df,dataSetName):
+        for column in df.columns:
+            try:
+                self.distPlot(df[column],dataSetName)
+                self.scatterPlot_vsSalePrice(df,df[column],dataSetName)
+            except TypeError:
+                print("TypeError:" + df[column].name)
+            except ValueError:
+                print("ValueError:" + df[column].name)
+    def distPlot(self,series,dataSetName):
+        sns.distplot(series)
+        plt.savefig("../figure/distPlot_" + dataSetName + "_" + series.name + ".png")
+        plt.show()
+        print("==========================\n(DistInfo)" + dataSetName + " / " + series.name)
+        print(series.describe())
+        print(f"skewness: {round(series.skew(),4)}" )
+        print(f"kurtosis: {round(series.kurt(),4)}" )
+        print("==========================")
+    def scatterPlot_vsSalePrice(self,df,series,dataSetName):
+        plt.figure(figsize=(10,10))
+        sns.scatterplot(data=df, x=series.name, y="SalePrice")
+        plt.savefig("../figure/sccatterPlot_" + dataSetName + "_" + series.name + "_vsSalePrice.png")
+        plt.show()
 class convertDataFrame:
     def __init__(self,df):
         self.df = df
