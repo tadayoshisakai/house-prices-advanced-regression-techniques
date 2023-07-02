@@ -12,7 +12,7 @@ def main():
     trainDF, testDF = load_data().getLoadedDataFrame()
     print("main")    
     
-class load_data():
+class load_data:
     def __init__(self):
         self.train = pd.read_csv('../data/train.csv')
         self.test = pd.read_csv('../data/test.csv')

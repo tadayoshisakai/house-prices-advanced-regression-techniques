@@ -2,5 +2,6 @@
             "targetVariable":"SalePrice"
             ,"num2str_list":["MSSubClass","YrSold","MoSold"]
             ,"outlierException_list":["LotArea<20000","SalePrice<400000","YearBuilt>1920"]
+            ,"trainMethod_list":["_num2str","_completeDefectValueByZero","_onehotEncoding","_outlierException"]
             }
-}   
+}
